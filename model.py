@@ -93,10 +93,22 @@ away_sim_df = pd.DataFrame(
 )
 away_sim_df.insert(0, "team", df["away_team"])
 
+draw_sim_df = pd.DataFrame(
+    {
+        f"sim_points_{i}": 1 * draw
+        for i, draw in enumerate(pp_trace["home_goals"] == pp_trace["away_goals"])
+    }
+)
+draw2_sim_df = draw_sim_df.copy()
+draw_sim_df.insert(0, "team", df["home_team"])
+draw2_sim_df.insert(0, "team", df["away_team"])
+
 sim_table = (
     home_sim_df.groupby("team")
     .sum()
     .add(away_sim_df.groupby("team").sum())
+    .add(draw_sim_df.groupby("team").sum())
+    .add(draw2_sim_df.groupby("team").sum())
     .rank(ascending=False, method="min", axis=0)
     .reset_index()
     .melt(id_vars="team", value_name="rank")
@@ -108,4 +120,4 @@ sim_table = (
 n_samples = sim_table.sum(axis=1).values[0]  # will be the same for all teams
 sim_table = sim_table.div(n_samples)
 
-im_table.loc[:,1.0].sort_values(ascending=False)
+sim_table.loc[:,1.0].sort_values(ascending=False)
