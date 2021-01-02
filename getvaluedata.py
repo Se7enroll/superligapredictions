@@ -92,7 +92,7 @@ if __name__ == "__main__":
             name = str(currentYear-1-i) + "-" + str(currentYear-i)
             data = data.append(scrapeValues(url, False, year=currentYear-i))
             # only data until '91
-            if currentYear-1-i < 1992:
+            if currentYear-1-i < 2000:
                 break
             i += 1
         data.to_csv("all.csv")
